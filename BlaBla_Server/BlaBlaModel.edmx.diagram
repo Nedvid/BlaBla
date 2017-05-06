@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="2598bab3999b4cfa8c7e55f545c55389" Name="Diagram1">
+        <EntityTypeShape EntityType="BlaBla_dbModel.Friendship" Width="1.5" PointX="3" PointY="1.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="BlaBla_dbModel.Message" Width="1.5" PointX="3" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="BlaBla_dbModel.User" Width="1.5" PointX="0.75" PointY="4.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="BlaBla_dbModel.VoiceHistory" Width="1.5" PointX="3" PointY="7.25" IsExpanded="true" />
+        <AssociationConnector Association="BlaBla_dbModel.FK_Friendship_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="BlaBla_dbModel.FK_Friendship_Users2" ManuallyRouted="false" />
+        <AssociationConnector Association="BlaBla_dbModel.FK_Messages_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="BlaBla_dbModel.FK_Messages_Users2" ManuallyRouted="false" />
+        <AssociationConnector Association="BlaBla_dbModel.FK_VoiceHistory_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="BlaBla_dbModel.FK_VoiceHistory_Users2" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

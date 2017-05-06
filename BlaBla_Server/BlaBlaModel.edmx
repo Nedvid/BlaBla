@@ -1,0 +1,375 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="BlaBla_dbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Friendship">
+          <Key>
+            <PropertyRef Name="Id_Friendship" />
+          </Key>
+          <Property Name="Id_Friendship" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Id_User1" Type="int" Nullable="false" />
+          <Property Name="Id_User2" Type="int" Nullable="false" />
+          <Property Name="FriendshipStatus" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Messages">
+          <Key>
+            <PropertyRef Name="Id_Message" />
+          </Key>
+          <Property Name="Id_Message" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Id_Sender" Type="int" Nullable="false" />
+          <Property Name="Id_Receiver" Type="int" Nullable="false" />
+          <Property Name="MessageData" Type="text" Nullable="false" />
+          <Property Name="SendDate" Type="date" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="Id_User" />
+          </Key>
+          <Property Name="Id_User" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Login" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="Password" Type="varchar" MaxLength="256" Nullable="false" />
+          <Property Name="Status" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="VoiceHistory">
+          <Key>
+            <PropertyRef Name="Id_VoiceHistory" />
+          </Key>
+          <Property Name="Id_VoiceHistory" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Id_Caller" Type="int" Nullable="false" />
+          <Property Name="Id_Receiver" Type="int" Nullable="false" />
+          <Property Name="CallDate" Type="date" Nullable="false" />
+          <Property Name="Duration" Type="time" Precision="7" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Friendship_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Friendship" Type="Self.Friendship" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id_User" />
+            </Principal>
+            <Dependent Role="Friendship">
+              <PropertyRef Name="Id_User1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Friendship_Users2">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Friendship" Type="Self.Friendship" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id_User" />
+            </Principal>
+            <Dependent Role="Friendship">
+              <PropertyRef Name="Id_User2" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Messages_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Messages" Type="Self.Messages" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id_User" />
+            </Principal>
+            <Dependent Role="Messages">
+              <PropertyRef Name="Id_Sender" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Messages_Users2">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="Messages" Type="Self.Messages" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id_User" />
+            </Principal>
+            <Dependent Role="Messages">
+              <PropertyRef Name="Id_Receiver" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VoiceHistory_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="VoiceHistory" Type="Self.VoiceHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id_User" />
+            </Principal>
+            <Dependent Role="VoiceHistory">
+              <PropertyRef Name="Id_Caller" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VoiceHistory_Users2">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="VoiceHistory" Type="Self.VoiceHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id_User" />
+            </Principal>
+            <Dependent Role="VoiceHistory">
+              <PropertyRef Name="Id_Receiver" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="BlaBla_dbModelStoreContainer">
+          <EntitySet Name="Friendship" EntityType="Self.Friendship" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Messages" EntityType="Self.Messages" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VoiceHistory" EntityType="Self.VoiceHistory" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Friendship_Users" Association="Self.FK_Friendship_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Friendship" EntitySet="Friendship" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Friendship_Users2" Association="Self.FK_Friendship_Users2">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Friendship" EntitySet="Friendship" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Messages_Users" Association="Self.FK_Messages_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Messages" EntitySet="Messages" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Messages_Users2" Association="Self.FK_Messages_Users2">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Messages" EntitySet="Messages" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VoiceHistory_Users" Association="Self.FK_VoiceHistory_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="VoiceHistory" EntitySet="VoiceHistory" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VoiceHistory_Users2" Association="Self.FK_VoiceHistory_Users2">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="VoiceHistory" EntitySet="VoiceHistory" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="BlaBla_dbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Friendship">
+          <Key>
+            <PropertyRef Name="Id_Friendship" />
+          </Key>
+          <Property Name="Id_Friendship" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Id_User1" Type="Int32" Nullable="false" />
+          <Property Name="Id_User2" Type="Int32" Nullable="false" />
+          <Property Name="FriendshipStatus" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Friendship_Users" FromRole="Friendship" ToRole="Users" />
+          <NavigationProperty Name="User1" Relationship="Self.FK_Friendship_Users2" FromRole="Friendship" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="Message">
+          <Key>
+            <PropertyRef Name="Id_Message" />
+          </Key>
+          <Property Name="Id_Message" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Id_Sender" Type="Int32" Nullable="false" />
+          <Property Name="Id_Receiver" Type="Int32" Nullable="false" />
+          <Property Name="MessageData" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="SendDate" Type="DateTime" Nullable="false" Precision="0" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Messages_Users" FromRole="Messages" ToRole="Users" />
+          <NavigationProperty Name="User1" Relationship="Self.FK_Messages_Users2" FromRole="Messages" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id_User" />
+          </Key>
+          <Property Name="Id_User" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Login" Type="String" MaxLength="45" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="256" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Friendships" Relationship="Self.FK_Friendship_Users" FromRole="Users" ToRole="Friendship" />
+          <NavigationProperty Name="Friendships1" Relationship="Self.FK_Friendship_Users2" FromRole="Users" ToRole="Friendship" />
+          <NavigationProperty Name="Messages" Relationship="Self.FK_Messages_Users" FromRole="Users" ToRole="Messages" />
+          <NavigationProperty Name="Messages1" Relationship="Self.FK_Messages_Users2" FromRole="Users" ToRole="Messages" />
+          <NavigationProperty Name="VoiceHistories" Relationship="Self.FK_VoiceHistory_Users" FromRole="Users" ToRole="VoiceHistory" />
+          <NavigationProperty Name="VoiceHistories1" Relationship="Self.FK_VoiceHistory_Users2" FromRole="Users" ToRole="VoiceHistory" />
+          <Property Name="Status" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="VoiceHistory">
+          <Key>
+            <PropertyRef Name="Id_VoiceHistory" />
+          </Key>
+          <Property Name="Id_VoiceHistory" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Id_Caller" Type="Int32" Nullable="false" />
+          <Property Name="Id_Receiver" Type="Int32" Nullable="false" />
+          <Property Name="CallDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Duration" Type="Time" Nullable="false" Precision="7" />
+          <NavigationProperty Name="User" Relationship="Self.FK_VoiceHistory_Users" FromRole="VoiceHistory" ToRole="Users" />
+          <NavigationProperty Name="User1" Relationship="Self.FK_VoiceHistory_Users2" FromRole="VoiceHistory" ToRole="Users" />
+        </EntityType>
+        <Association Name="FK_Friendship_Users">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="Friendship" Type="Self.Friendship" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id_User" />
+            </Principal>
+            <Dependent Role="Friendship">
+              <PropertyRef Name="Id_User1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Friendship_Users2">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="Friendship" Type="Self.Friendship" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id_User" />
+            </Principal>
+            <Dependent Role="Friendship">
+              <PropertyRef Name="Id_User2" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Messages_Users">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="Messages" Type="Self.Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id_User" />
+            </Principal>
+            <Dependent Role="Messages">
+              <PropertyRef Name="Id_Sender" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Messages_Users2">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="Messages" Type="Self.Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id_User" />
+            </Principal>
+            <Dependent Role="Messages">
+              <PropertyRef Name="Id_Receiver" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VoiceHistory_Users">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="VoiceHistory" Type="Self.VoiceHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id_User" />
+            </Principal>
+            <Dependent Role="VoiceHistory">
+              <PropertyRef Name="Id_Caller" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VoiceHistory_Users2">
+          <End Role="Users" Type="Self.User" Multiplicity="1" />
+          <End Role="VoiceHistory" Type="Self.VoiceHistory" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id_User" />
+            </Principal>
+            <Dependent Role="VoiceHistory">
+              <PropertyRef Name="Id_Receiver" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="BlaBla_dbContext" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Friendships" EntityType="Self.Friendship" />
+          <EntitySet Name="Messages" EntityType="Self.Message" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <EntitySet Name="VoiceHistories" EntityType="Self.VoiceHistory" />
+          <AssociationSet Name="FK_Friendship_Users" Association="Self.FK_Friendship_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Friendship" EntitySet="Friendships" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Friendship_Users2" Association="Self.FK_Friendship_Users2">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Friendship" EntitySet="Friendships" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Messages_Users" Association="Self.FK_Messages_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Messages" EntitySet="Messages" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Messages_Users2" Association="Self.FK_Messages_Users2">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Messages" EntitySet="Messages" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VoiceHistory_Users" Association="Self.FK_VoiceHistory_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="VoiceHistory" EntitySet="VoiceHistories" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VoiceHistory_Users2" Association="Self.FK_VoiceHistory_Users2">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="VoiceHistory" EntitySet="VoiceHistories" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="BlaBla_dbModelStoreContainer" CdmEntityContainer="BlaBla_dbContext">
+          <EntitySetMapping Name="Friendships">
+            <EntityTypeMapping TypeName="BlaBla_dbModel.Friendship">
+              <MappingFragment StoreEntitySet="Friendship">
+                <ScalarProperty Name="Id_Friendship" ColumnName="Id_Friendship" />
+                <ScalarProperty Name="Id_User1" ColumnName="Id_User1" />
+                <ScalarProperty Name="Id_User2" ColumnName="Id_User2" />
+                <ScalarProperty Name="FriendshipStatus" ColumnName="FriendshipStatus" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Messages">
+            <EntityTypeMapping TypeName="BlaBla_dbModel.Message">
+              <MappingFragment StoreEntitySet="Messages">
+                <ScalarProperty Name="Id_Message" ColumnName="Id_Message" />
+                <ScalarProperty Name="Id_Sender" ColumnName="Id_Sender" />
+                <ScalarProperty Name="Id_Receiver" ColumnName="Id_Receiver" />
+                <ScalarProperty Name="MessageData" ColumnName="MessageData" />
+                <ScalarProperty Name="SendDate" ColumnName="SendDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="BlaBla_dbModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Id_User" ColumnName="Id_User" />
+                <ScalarProperty Name="Login" ColumnName="Login" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VoiceHistories">
+            <EntityTypeMapping TypeName="BlaBla_dbModel.VoiceHistory">
+              <MappingFragment StoreEntitySet="VoiceHistory">
+                <ScalarProperty Name="Id_VoiceHistory" ColumnName="Id_VoiceHistory" />
+                <ScalarProperty Name="Id_Caller" ColumnName="Id_Caller" />
+                <ScalarProperty Name="Id_Receiver" ColumnName="Id_Receiver" />
+                <ScalarProperty Name="CallDate" ColumnName="CallDate" />
+                <ScalarProperty Name="Duration" ColumnName="Duration" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
