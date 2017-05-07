@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace BlaBla_Client.Forms
 {
@@ -52,7 +53,18 @@ namespace BlaBla_Client.Forms
 
         private void button_login_Click(object sender, EventArgs e)
         {
-            Connection.send("loguje się");
+            string hash = SHA.hashBytePassHex(textbox_password.Text);
+            Connection.data ="0001|"+textbox_login.Text+ "|" + hash;
+            Connection.send(Connection.data);
+            Thread.Sleep(2000);
+            if(Connection.sDataIncomming=="0001|True")
+            {
+                MessageBox.Show("Zalogowano!", "Succes", MessageBoxButtons.OK, MessageBoxIcon.None);
+            }
+            else
+            {
+                MessageBox.Show("Nie zalogowano!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

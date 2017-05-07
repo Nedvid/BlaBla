@@ -33,20 +33,19 @@ namespace BlaBla_Client.Forms
             this.CenterToScreen();
         }
 
-        private void button_login_Click(object sender, EventArgs e)
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+            this.Close();
+            
+        }
+
+        private void button_login_Click_1(object sender, EventArgs e)
         {
             Connection.ip_server = textbox_ip.Text;
             Connection.runserver();
             this.Hide();
             Login login_form = new Login();
             login_form.Show();
-
-        }
-
-        private void pictureBox2_Click(object sender, EventArgs e)
-        {
-            this.Close();
-            
         }
     }
 }

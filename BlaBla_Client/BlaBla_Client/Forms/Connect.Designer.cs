@@ -30,9 +30,9 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Connect));
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.button_login = new System.Windows.Forms.Button();
             this.textbox_ip = new System.Windows.Forms.TextBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.button_login = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
@@ -47,17 +47,6 @@
             this.pictureBox1.TabIndex = 8;
             this.pictureBox1.TabStop = false;
             // 
-            // button_login
-            // 
-            this.button_login.Font = new System.Drawing.Font("Roboto Condensed", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.button_login.Location = new System.Drawing.Point(106, 268);
-            this.button_login.Name = "button_login";
-            this.button_login.Size = new System.Drawing.Size(75, 23);
-            this.button_login.TabIndex = 7;
-            this.button_login.Text = "Połącz";
-            this.button_login.UseVisualStyleBackColor = true;
-            this.button_login.Click += new System.EventHandler(this.button_login_Click);
-            // 
             // textbox_ip
             // 
             this.textbox_ip.Font = new System.Drawing.Font("Roboto Light", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
@@ -70,6 +59,7 @@
             // 
             // pictureBox2
             // 
+            this.pictureBox2.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
             this.pictureBox2.Location = new System.Drawing.Point(257, 12);
             this.pictureBox2.Name = "pictureBox2";
@@ -79,15 +69,29 @@
             this.pictureBox2.TabStop = false;
             this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
             // 
+            // button_login
+            // 
+            this.button_login.BackColor = System.Drawing.Color.ForestGreen;
+            this.button_login.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_login.Font = new System.Drawing.Font("Roboto Condensed", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.button_login.ForeColor = System.Drawing.Color.White;
+            this.button_login.Location = new System.Drawing.Point(84, 268);
+            this.button_login.Name = "button_login";
+            this.button_login.Size = new System.Drawing.Size(117, 38);
+            this.button_login.TabIndex = 15;
+            this.button_login.Text = "Połącz";
+            this.button_login.UseVisualStyleBackColor = false;
+            this.button_login.Click += new System.EventHandler(this.button_login_Click_1);
+            // 
             // Connect
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(284, 366);
+            this.Controls.Add(this.button_login);
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.button_login);
             this.Controls.Add(this.textbox_ip);
             this.Name = "Connect";
             this.Text = "Connect";
@@ -101,8 +105,8 @@
         #endregion
 
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Button button_login;
         private System.Windows.Forms.TextBox textbox_ip;
         private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.Button button_login;
     }
 }

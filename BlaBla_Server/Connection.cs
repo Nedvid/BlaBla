@@ -21,7 +21,7 @@ namespace BlaBla_Server
             _server.Start();
             _isRunning = true;
             Console.WriteLine("ip server: " + ipAd);
-
+            Console.WriteLine("-----------------------------------------------------------------\n");
             LoopClients();
         }
 
@@ -31,7 +31,10 @@ namespace BlaBla_Server
             {
                 // wait for client connection
                 TcpClient newClient = _server.AcceptTcpClient();
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine(newClient.Client.RemoteEndPoint + ": " + "connected");
+                Console.ResetColor();
+
                 // client found.
                 // create a thread to handle communication
                 Thread t = new Thread(new ParameterizedThreadStart(HandleClient));
@@ -58,16 +61,45 @@ namespace BlaBla_Server
                 // reads from stream
                 sData = sReader.ReadLine();
 
-                // shows content on the console.
-                Console.WriteLine(client.Client.RemoteEndPoint+ ": " + sData);
-
-                if(sData == "bye")
+                if (sData == "bye")
                 {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write(client.Client.RemoteEndPoint + ": ");
+                    Console.Write(sData + "\n");
+                    Console.ResetColor();
+
+                    string answer = "bye";
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.Write(client.Client.RemoteEndPoint + ": ");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write(answer + "\n");
+                    Console.ResetColor();
+                    sWriter.WriteLine(answer);
+                    sWriter.Flush();
+
                     bClientConnected = false;
                 }
-                // to write something back.
-                // sWriter.WriteLine("Meaningfull things here");
-                // sWriter.Flush();
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    // shows content on the console.
+                    Console.Write(client.Client.RemoteEndPoint + ": ");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write(sData + "\n");
+                    Console.ResetColor();
+
+                    string answer = db_Functions.checker(sData);
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.Write(client.Client.RemoteEndPoint + ": ");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write(answer + "\n");
+                    Console.ResetColor();
+                    sWriter.WriteLine(answer);
+                    sWriter.Flush();
+                }
+
+
+
             }
         }
 

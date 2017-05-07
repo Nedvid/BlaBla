@@ -9,19 +9,37 @@ namespace BlaBla_Server
 {
     class db_Functions
     {
-        static Dictionary<int, Delegate> Dictionary = new Dictionary<int, Delegate>(); 
-
-        static void AddToDictionary()
+        public static string checker (string com)
         {
-            Dictionary[0] = new Action<List<string>>(db_Functions.Register);
-            Dictionary[1] = new Action<List<string>>(db_Functions.LogIn);
-            Dictionary[2] = new Action<List<string>>(db_Functions.LogOut);
-            //Dictionary[3] = new Action<List<string>>(db_Functions.AccDel);
-            //Dictionary[4] = new Action<List<string>>(db_Functions.PassChng);
-            //Dictionary[8] = new Action<List<string>>(db_Functions.AddFriend);
-            //Dictionary[9] = new Action<List<string>>(db_Functions.DelFriend);
-            //Dictionary[11] = new Action<List<string>>(db_Functions.CallState);
-            //Dictionary[15] = new Action<List<string>>(db_Functions.Iam);
+            List<string> command = seperate(com);
+            List<string> param = new List<string>();
+
+            switch (command[0])
+            {
+                case "0001":
+                    {
+                        param.Add(command[1]);
+                        param.Add(command[2]);
+                        return "0001|"+LogIn(param);
+                        break;
+                    }
+            }
+
+            return "error";
+
+        }
+
+        public static List<string> seperate (string txt)
+        {
+            char[] separators = { '|' };
+            string[] tmp = txt.Split(separators);
+            List<string> command = new List<string>();
+            foreach (var item in tmp)
+            {
+                command.Add(item);
+            }
+
+            return command;
         }
 
         public static void Register(List<string> param)
@@ -62,10 +80,10 @@ namespace BlaBla_Server
 
         }
 
-        public static void LogIn(List<string> param)
+        public static Boolean LogIn(List<string> param)
         {
             string login = param[0];
-            string password = SHA.hashBytePassHex(param[1]);
+            string password = param[1];
 
             using (var db = new BlaBla_dbContext())
             {
@@ -77,19 +95,20 @@ namespace BlaBla_Server
                     {
                         db.Entry(userToEdit).State = System.Data.Entity.EntityState.Modified;
                         db.SaveChanges();
+                        return true;
                     }
                     catch (DbUpdateConcurrencyException)
                     {
                         Console.WriteLine("FAIL1");
                         //FAIL
-                        return;
+                        return false;
                     }
                 }
                 else
                 {
                     Console.WriteLine("FAIL2");
                     //FAIL
-                    return;
+                    return false;
                 }
             }
             //OK

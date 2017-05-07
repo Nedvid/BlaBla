@@ -54,26 +54,30 @@
             this.textbox_password.Font = new System.Drawing.Font("Roboto Light", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.textbox_password.Location = new System.Drawing.Point(12, 249);
             this.textbox_password.Name = "textbox_password";
+            this.textbox_password.PasswordChar = '•';
             this.textbox_password.Size = new System.Drawing.Size(260, 22);
             this.textbox_password.TabIndex = 1;
             this.textbox_password.Text = "Hasło";
             // 
             // button_login
             // 
-            this.button_login.Font = new System.Drawing.Font("Roboto Condensed", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.button_login.Location = new System.Drawing.Point(105, 277);
+            this.button_login.BackColor = System.Drawing.Color.ForestGreen;
+            this.button_login.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_login.Font = new System.Drawing.Font("Roboto Condensed", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.button_login.ForeColor = System.Drawing.Color.White;
+            this.button_login.Location = new System.Drawing.Point(84, 277);
             this.button_login.Name = "button_login";
-            this.button_login.Size = new System.Drawing.Size(75, 23);
+            this.button_login.Size = new System.Drawing.Size(117, 38);
             this.button_login.TabIndex = 2;
             this.button_login.Text = "Zaloguj";
-            this.button_login.UseVisualStyleBackColor = true;
+            this.button_login.UseVisualStyleBackColor = false;
             this.button_login.Click += new System.EventHandler(this.button_login_Click);
             // 
             // label_text
             // 
             this.label_text.AutoSize = true;
             this.label_text.Font = new System.Drawing.Font("Roboto Light", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.label_text.Location = new System.Drawing.Point(35, 318);
+            this.label_text.Location = new System.Drawing.Point(31, 330);
             this.label_text.Name = "label_text";
             this.label_text.Size = new System.Drawing.Size(129, 15);
             this.label_text.TabIndex = 3;
@@ -84,10 +88,11 @@
             // 
             this.link_register.ActiveLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
             this.link_register.AutoSize = true;
+            this.link_register.Cursor = System.Windows.Forms.Cursors.WaitCursor;
             this.link_register.Font = new System.Drawing.Font("Roboto Condensed", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.link_register.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
             this.link_register.LinkColor = System.Drawing.Color.DarkGreen;
-            this.link_register.Location = new System.Drawing.Point(170, 318);
+            this.link_register.Location = new System.Drawing.Point(166, 330);
             this.link_register.Name = "link_register";
             this.link_register.Size = new System.Drawing.Size(72, 15);
             this.link_register.TabIndex = 4;
@@ -108,6 +113,7 @@
             // 
             // pictureBox2
             // 
+            this.pictureBox2.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
             this.pictureBox2.Location = new System.Drawing.Point(257, 12);
             this.pictureBox2.Name = "pictureBox2";

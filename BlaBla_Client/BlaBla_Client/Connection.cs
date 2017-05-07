@@ -13,8 +13,10 @@ namespace BlaBla_Client
         private static StreamReader _sReader;
         private static StreamWriter _sWriter;
         private static Boolean _isConnected;
+        public static string data;
         public static string ip_server;
         public static int port = 8001;
+        public static String sDataIncomming;
 
         public Connection()
         {
@@ -60,8 +62,7 @@ namespace BlaBla_Client
                 _sWriter.WriteLine(text);
                 _sWriter.Flush();
 
-                // if you want to receive anything
-                // String sDataIncomming = _sReader.ReadLine();
+                sDataIncomming = _sReader.ReadLine();
             }
         }
 
