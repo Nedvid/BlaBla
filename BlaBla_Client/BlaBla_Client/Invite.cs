@@ -33,7 +33,7 @@ namespace BlaBla_Client
         //komunikaty
         string komZapros = "INV";
         string komOdmow = "ODM";
-        string komAkceptuj = "AKC";
+        string komAkceptuj = "ACK";
 
         public Invite()
         {
@@ -100,9 +100,10 @@ namespace BlaBla_Client
                 {
                     MessageBox.Show("Polaczenie zostalo odrzucone");
                 }
-                if (komunikat == "AKC")
+                if (komunikat == "ACK")
                 {
                     MessageBox.Show("Polaczenie zostalo zaakceptowane");
+                    Calling c = new Calling(DoceloweIP);
                 }
 
             }
