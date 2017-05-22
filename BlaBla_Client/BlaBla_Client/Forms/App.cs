@@ -19,7 +19,7 @@ namespace BlaBla_Client.Forms
 {
     public partial class App : Form
     {
-        private BackgroundWorker worker;
+        private Invite inv { get; set; }
         [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
         private static extern IntPtr CreateRoundRectRgn
        (
@@ -38,6 +38,7 @@ namespace BlaBla_Client.Forms
             Region = System.Drawing.Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 10, 10));
             this.CenterToScreen();
 
+            inv = new Invite();
             Sender.ShowFriends(Program.login);
         }
 
@@ -60,7 +61,7 @@ namespace BlaBla_Client.Forms
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Calling c = new Calling(textBox2.Text);
+            inv.invite_someone(textBox2.Text);
             richTextBox1.Text +=  "Calling to " + textBox2.Text;
         }
 
