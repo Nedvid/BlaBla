@@ -36,7 +36,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.link_login = new System.Windows.Forms.LinkLabel();
-            this.button1 = new System.Windows.Forms.Button();
+            this.button_register = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
@@ -49,6 +49,7 @@
             this.textbox_login.Size = new System.Drawing.Size(260, 22);
             this.textbox_login.TabIndex = 0;
             this.textbox_login.Text = "Login";
+            this.textbox_login.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // textbot_password
             // 
@@ -59,6 +60,7 @@
             this.textbot_password.Size = new System.Drawing.Size(260, 22);
             this.textbot_password.TabIndex = 6;
             this.textbot_password.Text = "Hasło";
+            this.textbot_password.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // texbox_password_again
             // 
@@ -69,6 +71,7 @@
             this.texbox_password_again.Size = new System.Drawing.Size(260, 22);
             this.texbox_password_again.TabIndex = 7;
             this.texbox_password_again.Text = "Powtórz hasło";
+            this.texbox_password_again.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.texbox_password_again.TextChanged += new System.EventHandler(this.texbox_password_again_TextChanged);
             // 
             // label_text
@@ -121,18 +124,19 @@
             this.link_login.UseWaitCursor = true;
             this.link_login.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.link_login_LinkClicked_1);
             // 
-            // button1
+            // button_register
             // 
-            this.button1.BackColor = System.Drawing.Color.ForestGreen;
-            this.button1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button1.Font = new System.Drawing.Font("Roboto Condensed", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.button1.ForeColor = System.Drawing.Color.White;
-            this.button1.Location = new System.Drawing.Point(80, 305);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(117, 38);
-            this.button1.TabIndex = 14;
-            this.button1.Text = "Zarejestruj";
-            this.button1.UseVisualStyleBackColor = false;
+            this.button_register.BackColor = System.Drawing.Color.ForestGreen;
+            this.button_register.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_register.Font = new System.Drawing.Font("Roboto Condensed", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.button_register.ForeColor = System.Drawing.Color.White;
+            this.button_register.Location = new System.Drawing.Point(12, 305);
+            this.button_register.Name = "button_register";
+            this.button_register.Size = new System.Drawing.Size(260, 38);
+            this.button_register.TabIndex = 14;
+            this.button_register.Text = "Zarejestruj";
+            this.button_register.UseVisualStyleBackColor = false;
+            this.button_register.Click += new System.EventHandler(this.button1_Click_2);
             // 
             // Register
             // 
@@ -140,7 +144,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(284, 394);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.button_register);
             this.Controls.Add(this.link_login);
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.pictureBox1);
@@ -166,6 +170,6 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.LinkLabel link_login;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button_register;
     }
 }

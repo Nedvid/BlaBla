@@ -75,9 +75,9 @@
             this.button_login.Cursor = System.Windows.Forms.Cursors.Hand;
             this.button_login.Font = new System.Drawing.Font("Roboto Condensed", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.button_login.ForeColor = System.Drawing.Color.White;
-            this.button_login.Location = new System.Drawing.Point(84, 268);
+            this.button_login.Location = new System.Drawing.Point(12, 268);
             this.button_login.Name = "button_login";
-            this.button_login.Size = new System.Drawing.Size(117, 38);
+            this.button_login.Size = new System.Drawing.Size(260, 38);
             this.button_login.TabIndex = 15;
             this.button_login.Text = "Połącz";
             this.button_login.UseVisualStyleBackColor = false;

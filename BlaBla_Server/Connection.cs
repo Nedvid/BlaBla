@@ -4,6 +4,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.IO;
+using System.Collections.Generic;
+
 
 namespace BlaBla_Server
 {
@@ -13,7 +15,8 @@ namespace BlaBla_Server
         private Boolean _isRunning;
         private IPAddress ipAd = IPAddress.Parse(GetLocalIPAddress());
         private int port = 8001;
-
+        
+        
         public Connection()
         {
             Console.WriteLine("Server is running...");
@@ -34,6 +37,7 @@ namespace BlaBla_Server
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine(newClient.Client.RemoteEndPoint + ": " + "connected");
                 Console.ResetColor();
+
 
                 // client found.
                 // create a thread to handle communication
@@ -115,5 +119,7 @@ namespace BlaBla_Server
             }
             throw new Exception("Local IP Address Not Found!");
         }
+
+        
     }
 }

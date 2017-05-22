@@ -53,13 +53,13 @@ namespace BlaBla_Client.Forms
 
         private void button_login_Click(object sender, EventArgs e)
         {
-            string hash = SHA.hashBytePassHex(textbox_password.Text);
-            Connection.data ="0001|"+textbox_login.Text+ "|" + hash;
-            Connection.send(Connection.data);
-            Thread.Sleep(2000);
-            if(Connection.sDataIncomming=="0001|True")
+            if(Sender.login(textbox_login.Text, textbox_password.Text))
             {
                 MessageBox.Show("Zalogowano!", "Succes", MessageBoxButtons.OK, MessageBoxIcon.None);
+                this.Hide();
+                Program.login = textbox_login.Text;
+                App app_form = new App();
+                app_form.Show();
             }
             else
             {

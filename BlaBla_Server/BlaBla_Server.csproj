@@ -103,6 +103,7 @@
     <Compile Include="User.cs">
       <DependentUpon>BlaBlaModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="UserData.cs" />
     <Compile Include="VoiceHistory.cs">
       <DependentUpon>BlaBlaModel.tt</DependentUpon>
     </Compile>

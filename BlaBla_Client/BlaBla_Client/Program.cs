@@ -9,10 +9,13 @@ namespace BlaBla_Client
 {
     static class Program
     {
+        public static string login { get; set; }
+        public static List<Friend> Friends { get; set; }
+
         [STAThread]
         static void Main()
         {
-            
+            Friends = new List<Friend>();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Connect());

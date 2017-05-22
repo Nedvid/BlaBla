@@ -59,5 +59,20 @@ namespace BlaBla_Client.Forms
         {
 
         }
+
+        private void button1_Click_2(object sender, EventArgs e)
+        {
+            if (Sender.register(textbox_login.Text, textbot_password.Text))
+            {
+                MessageBox.Show("Zarejestrowano!", "Succes", MessageBoxButtons.OK, MessageBoxIcon.None);
+                this.Hide();
+                Login login_form = new Login();
+                login_form.Show();
+            }
+            else
+            {
+                MessageBox.Show("Taki użytkownik istnieje już w bazie.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
     }
 }

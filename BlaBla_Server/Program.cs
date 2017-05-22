@@ -54,10 +54,26 @@ namespace BlaBla_Server
             db_Functions.LogOut(user);
         }
 
+        public static void addFriend (string login1, string login2)
+        {
+            List<string> cmd = new List<string>();
+            cmd.Add(login1);
+            cmd.Add(login2);
+
+            Console.WriteLine(db_Functions.AddFriend(cmd));
+        }
+
+        public static void showFriends(string login1)
+        {
+            List<string> cmd = new List<string>();
+            cmd.Add(login1);
+
+            Console.WriteLine(db_Functions.ShowFriends(cmd));
+        }
 
         static void Main(string[] args)
         {
-
+            db_Functions.update_users();
             Connection c = new Connection();
             Console.WriteLine("\nPress any key to exit...");
             Console.ReadKey();

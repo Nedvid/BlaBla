@@ -49,7 +49,7 @@ namespace BlaBla_Client
             
         }
 
-        public static void send (string text)
+        public static string send (string text)
         {
             _sReader = new StreamReader(_client.GetStream(), Encoding.ASCII);
             _sWriter = new StreamWriter(_client.GetStream(), Encoding.ASCII);
@@ -63,7 +63,10 @@ namespace BlaBla_Client
                 _sWriter.Flush();
 
                 sDataIncomming = _sReader.ReadLine();
+                return sDataIncomming;
             }
+
+            return "false";
         }
 
         public static void close ()
