@@ -58,6 +58,7 @@ namespace BlaBla_Client.Forms
                 MessageBox.Show("Zalogowano!", "Succes", MessageBoxButtons.OK, MessageBoxIcon.None);
                 this.Hide();
                 Program.login = textbox_login.Text;
+                Program.status = true;
                 App app_form = new App();
                 app_form.Show();
             }

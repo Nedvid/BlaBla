@@ -10,6 +10,7 @@ namespace BlaBla_Client
     static class Program
     {
         public static string login { get; set; }
+        public static Boolean status { get; set; }
         public static List<Friend> Friends { get; set; }
 
         [STAThread]

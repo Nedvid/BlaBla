@@ -11,7 +11,7 @@ namespace BlaBla_Server
     {
         private static List<UserData> users = new List<UserData>();
 
-        public static string checker (string com)
+        public static string checker(string com)
         {
             List<string> command = seperate(com);
             List<string> param = new List<string>();
@@ -26,7 +26,7 @@ namespace BlaBla_Server
 
                         AddUser(command[1], command[3]);
                         update_users();
-                        return "0001|"+LogIn(param);
+                        return "0001|" + LogIn(param);
                     }
                 case "0010": //rejestracja
                     {
@@ -54,6 +54,11 @@ namespace BlaBla_Server
                     {
                         return "1111" + UpdateOnline();
                     }
+                case "1011": //zmiana statusu
+                    {
+                        ChangeStatus(command[1]);
+                        return "1011| True";
+                    }
             }
 
             return "error";
@@ -61,7 +66,7 @@ namespace BlaBla_Server
         }
 
         //parsowanie komunikatu
-        public static List<string> seperate (string txt)
+        public static List<string> seperate(string txt)
         {
             char[] separators = { '|' };
             string[] tmp = txt.Split(separators);
@@ -131,20 +136,20 @@ namespace BlaBla_Server
                     }
                     catch (DbUpdateConcurrencyException)
                     {
-                        Console.WriteLine("FAIL1");
+                        //Console.WriteLine("FAIL1");
                         //FAIL
                         return false;
                     }
                 }
                 else
                 {
-                    Console.WriteLine("FAIL2");
+                    //Console.WriteLine("FAIL2");
                     //FAIL
                     return false;
                 }
             }
             //OK
-            Console.WriteLine("OK");
+            //Console.WriteLine("OK");
         }
 
         //wylogowanie
@@ -158,7 +163,7 @@ namespace BlaBla_Server
             update_users();
 
             return "true";
-             
+
         }
 
         //dodawanie znajomego
@@ -176,11 +181,11 @@ namespace BlaBla_Server
                     var userID2 = db.Users.Where(x => x.Login == login2).Select(x => x.Id_User).FirstOrDefault();
                     if (userID2 != 0)
                     {
-                        var acq = db.Friendships.Where(x => x.Id_User1== userID1 && x.Id_User2== userID2).FirstOrDefault();
+                        var acq = db.Friendships.Where(x => x.Id_User1 == userID1 && x.Id_User2 == userID2).FirstOrDefault();
                         if (acq == null)
                         {
-                            acquaintance.Id_User1= userID1;
-                            acquaintance.Id_User2= userID2;
+                            acquaintance.Id_User1 = userID1;
+                            acquaintance.Id_User2 = userID2;
                             try
                             {
                                 db.Friendships.Add(acquaintance);
@@ -227,12 +232,12 @@ namespace BlaBla_Server
             {
                 var id_user1 = db.Users.Where(x => x.Login == login1).Select(x => x.Id_User).FirstOrDefault();
                 List<Friendship> acquainstance;
-                
+
                 //sprawdzenie pierwszej połówki
                 acquainstance = db.Friendships.Where(x => x.Id_User1 == id_user1).ToList();
-                if (acquainstance!=null)
+                if (acquainstance != null)
                 {
-                    foreach(var item in acquainstance)
+                    foreach (var item in acquainstance)
                     {
                         var login2 = db.Users.Where(x => x.Id_User == item.Id_User2).Select(x => x.Login).FirstOrDefault();
                         friends += "|" + login2.ToString();
@@ -257,12 +262,12 @@ namespace BlaBla_Server
         //update online
         public static string UpdateOnline()
         {
-            string online="";
-            foreach(var item in users)
+            string online = "";
+            foreach (var item in users)
             {
-                if(item.status==true)
+                if (item.status == true)
                 {
-                    online += "|" + item.login + "|"+ item.ip_address;
+                    online += "|" + item.login + "|" + item.ip_address;
                 }
             }
             return online;
@@ -281,20 +286,35 @@ namespace BlaBla_Server
             }
         }
 
+        //zmiana statusu
+        public static void ChangeStatus(string login)
+        {
+            foreach(var item in users)
+            {
+                if (item.login == login)
+                {
+                    if (item.status == true)
+                        item.status = false;
+                    else 
+                        item.status = true;
+                }
+            }
+        }
+
         //usuwanie użytkownika z listy
         public static void RemoveUser(string login)
         {
-           int tmp = 0;
+            int tmp = 0;
 
-           foreach (var item in users)
-              {
-                  if (item.login == login)
-                  {
-                      users.RemoveAt(tmp);
+            foreach (var item in users)
+            {
+                if (item.login == login)
+                {
+                    users.RemoveAt(tmp);
                     break;
-                  }
-                  tmp++;
-              }
+                }
+                tmp++;
+            }
         }
 
         //sprawdzenie czy użytkonik już jest na liście
@@ -328,11 +348,11 @@ namespace BlaBla_Server
             Console.Write(tmp);
             Console.ResetColor();
 
-            Console.SetCursorPosition(left,top);
+            Console.SetCursorPosition(left, top);
         }
     }
 
 
 
-    
+
 }

@@ -100,6 +100,8 @@ namespace BlaBla_Client
             {
                 foreach (var item2 in Program.Friends)
                 {
+                    item2.ip = "";
+                    item2.status = false;
                     if (item.ToString()==item2.login)
                     {
                         item2.status = true;
@@ -109,6 +111,14 @@ namespace BlaBla_Client
                 }
                 tmp++;
             }
+        }
+
+        public static void ChangeStatus ()
+        {
+            Connection.data = "1011|" + Program.login;
+
+            Connection.send(Connection.data);
+            
         }
 
         public static List<string> seperate(string txt)
