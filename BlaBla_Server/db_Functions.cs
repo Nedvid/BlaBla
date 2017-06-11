@@ -45,6 +45,19 @@ namespace BlaBla_Server
                         param.Add(command[2]);
                         return "1001|" + AddFriend(param);
                     }
+                case "1010": //usunięcie kontaktu
+                    {
+                        param.Add(command[1]);
+                        param.Add(command[2]);
+                        return "1010|" + RemoveFriend(param);
+                    }
+                case "0100": //zmiana hasła
+                    {
+                        param.Add(command[1]);
+                        param.Add(command[2]);
+                        param.Add(command[3]);
+                        return "0100|" + ChangePass(param);
+                    }
                 case "0101": //lista znajomych
                     {
                         param.Add(command[1]);
@@ -58,6 +71,10 @@ namespace BlaBla_Server
                     {
                         ChangeStatus(command[1]);
                         return "1011| True";
+                    }
+                case "0111": //search
+                    {
+                        return "0111" + Search(command[1]);
                     }
             }
 
@@ -223,6 +240,43 @@ namespace BlaBla_Server
             return true;
         }
 
+        //usuwanie znajomego
+        public static Boolean RemoveFriend(List<string> param)
+        {
+            string login1 = param[0]; //login1
+            string login2 = param[1]; //login2
+
+            using (var db = new BlaBla_dbContext())
+            {
+                var id_user1 = db.Users.Where(x => x.Login == login1).Select(x => x.Id_User).FirstOrDefault();
+                var id_user2 = db.Users.Where(x => x.Login == login2).Select(x => x.Id_User).FirstOrDefault();
+                Friendship friendship;
+                Friendship friendship2;
+                int tmp = 0;
+
+                friendship = db.Friendships.Where(x => x.Id_User1 == id_user1 && x.Id_User2== id_user2).FirstOrDefault();
+                if (friendship != null)
+                {
+                    db.Friendships.Remove(friendship);
+                    db.SaveChanges();
+                    tmp++;
+                }
+
+                friendship2 = db.Friendships.Where(x => x.Id_User1 == id_user2 && x.Id_User2 == id_user1).FirstOrDefault();
+                if (friendship2 != null)
+                {
+                    db.Friendships.Remove(friendship2);
+                    db.SaveChanges();
+                    tmp++;
+                }
+
+                if (tmp > 0)
+                    return true;
+               
+            }
+            return false;
+        }
+
         //lista znajomych
         public static string ShowFriends(List<string> param)
         {
@@ -259,6 +313,32 @@ namespace BlaBla_Server
             return friends;
         }
 
+        //zmiana hasła
+        public static Boolean ChangePass(List<string> param)
+        {
+            string login = param[0];
+            string oldpass = param[1];
+            string newpass = param[2];
+
+            //sprawdzenie czy haslo stare poprawne
+            using (var db = new BlaBla_dbContext())
+            {
+                var user = db.Users.Where(x => x.Login == login && x.Password == oldpass).FirstOrDefault();
+
+                if (user != null)
+                {
+                    user.Password = newpass;
+                    db.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
+
         //update online
         public static string UpdateOnline()
         {
@@ -271,6 +351,27 @@ namespace BlaBla_Server
                 }
             }
             return online;
+        }
+
+        //search
+        public static string Search(string search)
+        {
+            string wynik = "";
+
+            using (var db = new BlaBla_dbContext())
+            {
+                var list_user = db.Users.ToList();
+
+                foreach (var item in list_user)
+                {
+                    if (item.Login.Contains(search))
+                    {
+                        wynik += "|" + item.Login;  
+                    }
+                }
+            }
+
+            return wynik;
         }
 
         //dodanie użytkownika do listy po zalogowaniu

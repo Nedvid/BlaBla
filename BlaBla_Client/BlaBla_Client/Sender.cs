@@ -56,6 +56,61 @@ namespace BlaBla_Client
             }
         }
 
+        public static Boolean changepass(string login, string oldpass, string newpass)
+        {
+            string oldpass_hash = SHA.hashBytePassHex(oldpass);
+            string newpass_hash = SHA.hashBytePassHex(newpass);
+
+            Connection.data = "0100|" + login + "|" + oldpass_hash + "|" + newpass_hash;
+
+            if (Connection.send(Connection.data) == "0100|True")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static List<string> search (string param)
+        {
+            Connection.data = "0111|" + param;
+            string answer = Connection.send(Connection.data);
+            List<string> wynik = seperate(answer);
+            wynik.RemoveAt(0);
+
+            return wynik;
+        }
+
+        public static Boolean add_friend(string login, string friend)
+        {
+            Connection.data = "1001|" + login + "|" + friend;
+
+            if (Connection.send(Connection.data) == "1001|True")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static Boolean remove_friend(string login, string friend)
+        {
+            Connection.data = "1010|" + login + "|" + friend;
+
+            if (Connection.send(Connection.data) == "1010|True")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public static void ShowFriends (string login)
         {
             Connection.data = "0101|" + login ;
@@ -76,40 +131,25 @@ namespace BlaBla_Client
         {
             Connection.data = "1111|";
             string answer = Connection.send(Connection.data);
-            List<string> all = seperate(answer);
-            all.RemoveAt(0);
-            List<string> online = new List<string>();
-            List<string> ip = new List<string>();
-            int tmp = 0;
-
-            foreach (var item in all)
+            List<string> List = seperate(answer);
+            
+            //wyczyszczenie pól statusu i ip
+            foreach (var item in Program.Friends)
             {
-                if (tmp%2==0)
-                {
-                    online.Add(item);
-                }
-                else
-                {
-                    ip.Add(item);
-                }
-                tmp++;
+                item.status = false;
+                item.ip = "";
             }
 
-            tmp = 0;
-            foreach (var item in online)
+            for (int i=1; i<List.Count; i++)
             {
-                foreach (var item2 in Program.Friends)
+                foreach (var item in Program.Friends)
                 {
-                    item2.ip = "";
-                    item2.status = false;
-                    if (item.ToString()==item2.login)
+                    if (item.login == List[i])
                     {
-                        item2.status = true;
-                        item2.ip = ip[tmp];
-                        
+                        item.ip = List[i + 1];
+                        item.status = true;
                     }
                 }
-                tmp++;
             }
         }
 
@@ -123,8 +163,7 @@ namespace BlaBla_Client
 
         public static List<string> seperate(string txt)
         {
-            char[] separators = { '|' };
-            string[] tmp = txt.Split(separators);
+            string[] tmp = txt.Split('|');
             List<string> command = new List<string>();
             foreach (var item in tmp)
             {

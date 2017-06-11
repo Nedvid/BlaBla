@@ -54,6 +54,9 @@ namespace BlaBla_Client.Forms
         private static Label Status;
         private static Label Status_user;
 
+        //Dzwonek
+        private static System.Media.SoundPlayer ring { get; set; }
+
         //Grafa
         [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
         private static extern IntPtr CreateRoundRectRgn
@@ -73,6 +76,10 @@ namespace BlaBla_Client.Forms
             Region = System.Drawing.Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 10, 10));
             this.CenterToScreen();
 
+            ring = new System.Media.SoundPlayer();
+            ring.SoundLocation = "ringhtone.wav";
+            
+
             Status = label4;
             Status_user = label3;
 
@@ -87,68 +94,6 @@ namespace BlaBla_Client.Forms
             
             Sender.ShowFriends(Program.login);
         }
-        private void pictureBox2_Click(object sender, EventArgs e)
-        {
-            if(Sender.logout(Program.login))
-            {
-                Connection.close();
-                this.Close();
-            }
-            else
-            {
-                Connection.close();
-                this.Close();
-            }
-            
-
-        }
-        private void button1_Click(object sender, EventArgs e)
-        {
-            destination_ip = textBox2.Text;
-            portNumber = 3003;
-
-            client.Connect(destination_ip, portNumber);
-            Send("INV");
-        }
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-           foreach (var item in Program.Friends)
-            {
-                if(listBox1.SelectedItem.ToString() == item.login)
-                {
-                    textBox2.Text = item.ip;
-                }
-            }
-        }
-        private void Refresh_Click(object sender, EventArgs e)
-        {
-            Sender.UpdateOnline();
-            listBox1.Items.Clear();
-
-           
-            string tmp = "DOSTĘPNI";
-
-            listBox1.Items.Add(tmp);
-            foreach (var item in Program.Friends)
-            {
-                if (item.status == true)
-                {
-                    listBox1.Items.Add(item.login);
-                }
-            }
-
-            tmp = "NIEDOSTĘPNI";
-            listBox1.Items.Add(tmp);
-            foreach (var item in Program.Friends)
-            {
-                if (item.status == false)
-                {
-
-                    listBox1.Items.Add(item.login);
-                }
-            }
-        }
-
 
         //Połączenie
         private void StartListening()
@@ -182,11 +127,18 @@ namespace BlaBla_Client.Forms
 
                     IPEndPoint remoteIpEndPoint = clientserv.Client.RemoteEndPoint as IPEndPoint;
                     destination_ip = remoteIpEndPoint.Address.ToString();
-                    DialogResult dialogResult = MessageBox.Show("Chcesz odebrać połączenie od: " + ktonazwa + " ?", "Some Title", MessageBoxButtons.YesNo);
+                    string user_login = Program.Friends.Where(p => p.ip == destination_ip).Select(p => p.login).FirstOrDefault();
+                    ring.Play();
+                    DialogResult dialogResult = MessageBox.Show("Czy chcesz odebrać połączenie od: " + user_login + "?", "Some Title", MessageBoxButtons.YesNo);
                     if (dialogResult == DialogResult.Yes)
                     {
+                        ring.Stop();
+                        portNumber = 3003;
+                        client.Connect(destination_ip, portNumber);
+                        Send("ACK");
                         StartCall(destination_ip);
-                        DialogResult dialogResult2 = MessageBox.Show("Rozmowa z: " + ktonazwa, "Succes", MessageBoxButtons.OKCancel, MessageBoxIcon.None);
+
+                        DialogResult dialogResult2 = MessageBox.Show("Trwa rozmowa z: " + user_login, "Succes", MessageBoxButtons.OKCancel, MessageBoxIcon.None);
                         if (dialogResult2 == DialogResult.OK)
                         {
 
@@ -194,6 +146,7 @@ namespace BlaBla_Client.Forms
                         }
                         else if (dialogResult2 == DialogResult.Cancel)
                         {
+                            ring.Stop();
                             Status.Invoke(new MethodInvoker(delegate { Status.Text = "Rozłączono"; }));
                             CloseDevices();
                             clientserv.Close();
@@ -209,8 +162,17 @@ namespace BlaBla_Client.Forms
                         clientserv = null;
                     }
                 }
+                if (komunikat =="ACK")
+                {
+                    string ktonazwa = Dns.GetHostEntry(((IPEndPoint)clientserv.Client.RemoteEndPoint).Address).HostName.ToString();
+                    IPEndPoint remoteIpEndPoint = clientserv.Client.RemoteEndPoint as IPEndPoint;
+                    destination_ip = remoteIpEndPoint.Address.ToString();
+                    string user_login = Program.Friends.Where(p => p.ip == destination_ip).Select(p => p.login).FirstOrDefault();
+
+                    MessageBox.Show("Trwa Rozmowa z: " + user_login, "Some Title", MessageBoxButtons.YesNo);
+                }
             }
-        }
+        }   
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
@@ -223,7 +185,7 @@ namespace BlaBla_Client.Forms
         {
             base.OnFormClosing(e);
             StopListening();
-        }
+        } 
         private void Send(string komunikat)
         {
             BinaryFormatter binFormatter = new BinaryFormatter();
@@ -330,7 +292,6 @@ namespace BlaBla_Client.Forms
 
         //Aktualizacje
         delegate void StringArgReturningVoidDelegate(string text);
-
         private void button2_Click(object sender, EventArgs e)
         {
             if (label3.Text == "Dostępny")
@@ -346,6 +307,98 @@ namespace BlaBla_Client.Forms
                 Sender.ChangeStatus();
             }
             
+        }
+
+        //Akcje
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+            if (Sender.logout(Program.login))
+            {
+                Connection.close();
+                this.Close();
+            }
+            else
+            {
+                Connection.close();
+                this.Close();
+            }
+
+
+        }
+        private void button1_Click(object sender, EventArgs e)
+        {
+            destination_ip = textBox2.Text;
+            portNumber = 3003;
+
+            client.Connect(destination_ip, portNumber);
+            Send("INV");
+        }
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            foreach (var item in Program.Friends)
+            {
+                if (listBox1.SelectedItem.ToString() == item.login)
+                {
+                    textBox2.Text = item.ip;
+                }
+            }
+        }
+        private void Refresh_Click(object sender, EventArgs e)
+        {
+            Sender.UpdateOnline();
+            listBox1.Items.Clear();
+
+
+            string tmp = "DOSTĘPNI";
+
+            listBox1.Items.Add(tmp);
+            foreach (var item in Program.Friends)
+            {
+                if (item.status == true)
+                {
+                    listBox1.Items.Add(item.login);
+                }
+            }
+
+            tmp = "NIEDOSTĘPNI";
+            listBox1.Items.Add(tmp);
+            foreach (var item in Program.Friends)
+            {
+                if (item.status == false)
+                {
+
+                    listBox1.Items.Add(item.login);
+                }
+            }
+        }
+        private void pictureBox3_Click(object sender, EventArgs e)
+        {
+            Settings set_form = new Settings();
+            set_form.Show();
+        }
+        private void pictureBox4_Click(object sender, EventArgs e)
+        {
+            Program.login = "";
+            Program.Friends = new List<Friend>();
+            Sender.ChangeStatus();
+
+            this.Hide();
+            Login login_form = new Forms.Login();
+            login_form.Show();
+        }
+        private void pictureBox5_Click(object sender, EventArgs e)
+        {
+            Search search_form = new Search();
+            search_form.Show();
+        }
+        private void pictureBox7_Click(object sender, EventArgs e)
+        {
+            this.WindowState = FormWindowState.Minimized;
+        }
+        private void pictureBox6_Click(object sender, EventArgs e)
+        {
+            History history_form = new History();
+            history_form.Show();
         }
     }
 }
