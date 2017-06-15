@@ -17,10 +17,12 @@ using System.Net;
 using Ozeki.Media.MediaHandlers;
 using Ozeki.VoIP;
 using Ozeki.VoIP.SDK;
+using System.Security.Permissions;
+using System.IO;
 
 namespace BlaBla_Client.Forms
 {
-    public partial class App : Form
+    public partial class App : CustomForm.MyForm
     {
         //OZEKI
         static ISoftPhone softphone;   // softphone object
@@ -32,23 +34,28 @@ namespace BlaBla_Client.Forms
         static PhoneCallAudioSender mediaSender;
         static PhoneCallAudioReceiver mediaReceiver;
         static MediaConnector connector;
+        private readonly Thread Caller;
 
+        //Ogolne
         static string local_ip = GetLocalIPAddress();
         static string destination_ip;
+        static string destination_user;
 
-        //TCP nasluchiwanie - server
-        private TcpClient client = new TcpClient();
-        private NetworkStream mainStream;
-        private int portNumber;
+        //Server 
+        private TcpListener _server;
+        private Boolean _isRunning;
+        private IPAddress ipAd = IPAddress.Parse(GetLocalIPAddress());
+        private int port = 8003;
+        private static int port2 = 8003;
+        private static Boolean busy { get; set; }
 
-        //TCP wysylanie - client
-        private TcpClient clientserv = new TcpClient();
-        private TcpListener server;
-        private NetworkStream netStream;
-        private int portNumberServ;
-        private readonly Thread Listetning;
-        private readonly Thread GetMessage;
-        private readonly Thread Caller;
+        //Klient 
+        private static TcpClient _client;
+        private static StreamReader _sReader;
+        private static StreamWriter _sWriter;
+        private static Boolean _isConnected;
+        public static string data;
+        public static String sDataIncomming;
 
         //Pola akutalizowane
         private static Label Status;
@@ -57,140 +64,213 @@ namespace BlaBla_Client.Forms
         //Dzwonek
         private static System.Media.SoundPlayer ring { get; set; }
 
-        //Grafa
-        [DllImport("Gdi32.dll", EntryPoint = "CreateRoundRectRgn")]
-        private static extern IntPtr CreateRoundRectRgn
-       (
-           int nLeftRect, // x-coordinate of upper-left corner
-           int nTopRect, // y-coordinate of upper-left corner
-           int nRightRect, // x-coordinate of lower-right corner
-           int nBottomRect, // y-coordinate of lower-right corner
-           int nWidthEllipse, // height of ellipse
-           int nHeightEllipse // width of ellipse
-       );
+        //Polaczenie
+        private Talk t { get; set; }
+        private static Form MainForm;
 
         public App()
         {
             InitializeComponent();
-            this.FormBorderStyle = FormBorderStyle.None;
-            Region = System.Drawing.Region.FromHrgn(CreateRoundRectRgn(0, 0, Width, Height, 10, 10));
             this.CenterToScreen();
 
             ring = new System.Media.SoundPlayer();
             ring.SoundLocation = "ringhtone.wav";
-            
 
             Status = label4;
             Status_user = label3;
+            MainForm = this;
 
             label1.Text = Program.login;
             label2.Text = GetLocalIPAddress();
             label3.Text = "Dostępny";
 
-            Listetning = new Thread(StartListening);
-            GetMessage = new Thread(Receiver);
+            //uruchumienie serwera klienta
+            busy = false;
+            _server = new TcpListener(ipAd, port);
+            _server.Start();
+            _isRunning = true;
+            Thread t = new Thread(LoopClients);
+            t.Start();
+
             Caller = new Thread(Ozeki);
             Caller.Start();
-            
+
             Sender.ShowFriends(Program.login);
         }
 
         //Połączenie
-        private void StartListening()
+        private void TalkWindow()
         {
-            while (!clientserv.Connected)
+            t = new Talk();
+            t.Invoke(new MethodInvoker(delegate
             {
-                server.Start();
-                clientserv = server.AcceptTcpClient();
-            }
-            GetMessage.Start();
-        }
-        private void StopListening()
-        {
-            server.Stop();
-            clientserv = null;
+                t.user = destination_user;
+                t.ShowDialog();
+                checker();
+            }));
 
-            if (Listetning.IsAlive) Listetning.Abort();
-            if (GetMessage.IsAlive) GetMessage.Abort();
         }
-        private void Receiver()
+        private void checker()
         {
-            BinaryFormatter binFormatter = new BinaryFormatter();
-
-            if (clientserv.Connected)
+            if(t.OnCall==false)
             {
-                netStream = clientserv.GetStream();
-                string komunikat = (String)binFormatter.Deserialize(netStream);
-                if (komunikat == "INV")
+                if (_client != null)
                 {
-                    string ktonazwa = Dns.GetHostEntry(((IPEndPoint)clientserv.Client.RemoteEndPoint).Address).HostName.ToString();
+                    Status.Invoke(new MethodInvoker(delegate { Status.Text = "Rozłączono"; }));
+                    CloseDevices();
+                    Caller.Abort();
+                    Caller.Start();
+                    busy = false;
+                    send("BYE");
+                }
+                else
+                {
+                    Status.Invoke(new MethodInvoker(delegate { Status.Text = "Rozłączono"; }));
+                    CloseDevices();
+                    Caller.Abort();
+                    Caller.Start();
+                    connect();
+                    busy = false;
+                    send("BYE");
+                }
+            }
+        }
+        //Serwer
+        public void LoopClients()
+        {
+            while (_isRunning)
+            {
+                // wait for client connection
+                TcpClient newClient = _server.AcceptTcpClient();
+                Thread t = new Thread(new ParameterizedThreadStart(HandleClient));
+                t.Start(newClient);
+            }
+        }
+        public void HandleClient(object obj)
+        {
+            TcpClient client = (TcpClient)obj;
 
-                    IPEndPoint remoteIpEndPoint = clientserv.Client.RemoteEndPoint as IPEndPoint;
+            // sets two streams
+            StreamWriter sWriter = new StreamWriter(client.GetStream(), Encoding.ASCII);
+            StreamReader sReader = new StreamReader(client.GetStream(), Encoding.ASCII);
+            // you could use the NetworkStream to read and write, 
+            // but there is no forcing flush, even when requested
+
+            Boolean bClientConnected = true;
+            String sData = null;
+
+            while (bClientConnected)
+            {
+                // reads from stream
+                sData = sReader.ReadLine();
+
+                if (sData == "INV")
+                {
+                    IPEndPoint remoteIpEndPoint = client.Client.RemoteEndPoint as IPEndPoint;
                     destination_ip = remoteIpEndPoint.Address.ToString();
-                    string user_login = Program.Friends.Where(p => p.ip == destination_ip).Select(p => p.login).FirstOrDefault();
-                    ring.Play();
-                    DialogResult dialogResult = MessageBox.Show("Czy chcesz odebrać połączenie od: " + user_login + "?", "Some Title", MessageBoxButtons.YesNo);
-                    if (dialogResult == DialogResult.Yes)
+                    destination_user = Program.Friends.Where(p => p.ip == destination_ip).Select(p => p.login).FirstOrDefault();
+
+                    if (busy==false)
                     {
-                        ring.Stop();
-                        portNumber = 3003;
-                        client.Connect(destination_ip, portNumber);
-                        Send("ACK");
-                        StartCall(destination_ip);
-
-                        DialogResult dialogResult2 = MessageBox.Show("Trwa rozmowa z: " + user_login, "Succes", MessageBoxButtons.OKCancel, MessageBoxIcon.None);
-                        if (dialogResult2 == DialogResult.OK)
-                        {
-
-
-                        }
-                        else if (dialogResult2 == DialogResult.Cancel)
+                        ring.Play();
+                        DialogResult dialogResult = MessageBox.Show("Czy chcesz odebrać połączenie od: " + destination_user + "?", "Połączenie", MessageBoxButtons.YesNo);
+                        if (dialogResult == DialogResult.Yes)
                         {
                             ring.Stop();
-                            Status.Invoke(new MethodInvoker(delegate { Status.Text = "Rozłączono"; }));
-                            CloseDevices();
-                            clientserv.Close();
-                            clientserv = null;
+                            busy = true;
+                            sWriter.WriteLine("ACK");
+                            sWriter.Flush();
+
+                            StartCall(destination_ip);
+                            TalkWindow();
                         }
-
-
+                        else if (dialogResult == DialogResult.No)
+                        {
+                            ring.Stop();
+                            sWriter.WriteLine("REF");
+                            sWriter.Flush();
+                            MessageBox.Show("Polaczenie od: " + destination_user + " odrzucone");
+                        }
                     }
-                    else if (dialogResult == DialogResult.No)
+                    if(busy==true)
                     {
-                        MessageBox.Show("Polaczenie od: " + ktonazwa + " odrzucone");
-                        clientserv.Close();
-                        clientserv = null;
+                        sWriter.WriteLine("BUS");
+                        sWriter.Flush();
+                        bClientConnected = false;
                     }
+                    
                 }
-                if (komunikat =="ACK")
-                {
-                    string ktonazwa = Dns.GetHostEntry(((IPEndPoint)clientserv.Client.RemoteEndPoint).Address).HostName.ToString();
-                    IPEndPoint remoteIpEndPoint = clientserv.Client.RemoteEndPoint as IPEndPoint;
-                    destination_ip = remoteIpEndPoint.Address.ToString();
-                    string user_login = Program.Friends.Where(p => p.ip == destination_ip).Select(p => p.login).FirstOrDefault();
 
-                    MessageBox.Show("Trwa Rozmowa z: " + user_login, "Some Title", MessageBoxButtons.YesNo);
+                if (sData == "BYE")
+                {
+                    busy = false;
+                    sWriter.Flush();
+                    bClientConnected = false;
+
+                    t.Invoke(new MethodInvoker(delegate
+                    {
+                        t.user = destination_user;
+                        t.ShowDialog();
+                        checker();
+                    }));
+
+                    CloseDevices();
+                    Caller.Abort();
+                    Caller.Start();
+                    Status.Invoke(new MethodInvoker(delegate { Status.Text = "Rozłączono"; }));
                 }
             }
-        }   
-        protected override void OnLoad(EventArgs e)
-        {
-            base.OnLoad(e);
-            portNumberServ = 3003;
-            server = new TcpListener(IPAddress.Any, portNumberServ);
-
-            Listetning.Start();
         }
-        protected override void OnFormClosing(FormClosingEventArgs e)
+        //Klient
+        public static Boolean connect()
         {
-            base.OnFormClosing(e);
-            StopListening();
-        } 
-        private void Send(string komunikat)
+            try
+            {
+                IPAddress ip = IPAddress.Parse(destination_ip);
+                _client = new TcpClient();
+                _client.Connect(ip, port2);
+                HandleCommunication();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public static void HandleCommunication()
         {
-            BinaryFormatter binFormatter = new BinaryFormatter();
-            mainStream = client.GetStream();
-            binFormatter.Serialize(mainStream, komunikat);
+            _sReader = new StreamReader(_client.GetStream(), Encoding.ASCII);
+            _sWriter = new StreamWriter(_client.GetStream(), Encoding.ASCII);
+
+            _isConnected = true;
+
+        }
+        public static string send(string text)
+        {
+            _sReader = new StreamReader(_client.GetStream(), Encoding.ASCII);
+            _sWriter = new StreamWriter(_client.GetStream(), Encoding.ASCII);
+
+            if (_isConnected)
+            {
+                // write data and make sure to flush, or the buffer will continue to 
+                // grow, and your data might not be sent when you want it, and will
+                // only be sent once the buffer is filled.
+                _sWriter.WriteLine(text);
+                _sWriter.Flush();
+
+                sDataIncomming = _sReader.ReadLine();
+                return sDataIncomming;
+            }
+
+            return "false";
+        }
+        public static void close()
+        {
+            send("BYE");
+            _sReader.Close();
+            _sWriter.Close();
+            _client.Client.Close();
+            _client.Close();
         }
 
         //OZEKI
@@ -306,7 +386,7 @@ namespace BlaBla_Client.Forms
                 Program.status = true;
                 Sender.ChangeStatus();
             }
-            
+
         }
 
         //Akcje
@@ -328,10 +408,26 @@ namespace BlaBla_Client.Forms
         private void button1_Click(object sender, EventArgs e)
         {
             destination_ip = textBox2.Text;
-            portNumber = 3003;
+            connect();
 
-            client.Connect(destination_ip, portNumber);
-            Send("INV");
+            string answer = send("INV");
+            if (answer=="ACK")
+            {
+                destination_user = Program.Friends.Where(p => p.ip == destination_ip).Select(p => p.login).FirstOrDefault();
+                busy = true;
+                TalkWindow();
+            }
+            if (answer == "REF")
+            {
+                destination_user = Program.Friends.Where(p => p.ip == destination_ip).Select(p => p.login).FirstOrDefault();
+                MessageBox.Show("Polaczenie od: " + destination_user + "zostało odrzucone.");
+            }
+            if (answer == "BUS")
+            {
+                destination_user = Program.Friends.Where(p => p.ip == destination_ip).Select(p => p.login).FirstOrDefault();
+                MessageBox.Show("Użytkownik jest zajęty.");
+            }
+
         }
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -376,13 +472,16 @@ namespace BlaBla_Client.Forms
             Settings set_form = new Settings();
             set_form.Show();
         }
+        [SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
         private void pictureBox4_Click(object sender, EventArgs e)
         {
             Program.login = "";
             Program.Friends = new List<Friend>();
             Sender.ChangeStatus();
 
-            this.Hide();
+            if (Caller.IsAlive) Caller.Abort();
+            this.Close();
+
             Login login_form = new Forms.Login();
             login_form.Show();
         }
@@ -391,14 +490,11 @@ namespace BlaBla_Client.Forms
             Search search_form = new Search();
             search_form.Show();
         }
-        private void pictureBox7_Click(object sender, EventArgs e)
-        {
-            this.WindowState = FormWindowState.Minimized;
-        }
         private void pictureBox6_Click(object sender, EventArgs e)
         {
             History history_form = new History();
             history_form.Show();
         }
+
     }
 }

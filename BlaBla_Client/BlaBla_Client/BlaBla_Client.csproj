@@ -93,6 +93,12 @@
     <Compile Include="Forms\Settings.Designer.cs">
       <DependentUpon>Settings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Talk.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Talk.Designer.cs">
+      <DependentUpon>Talk.cs</DependentUpon>
+    </Compile>
     <Compile Include="Friend.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -123,6 +129,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Settings.resx">
       <DependentUpon>Settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Talk.resx">
+      <DependentUpon>Talk.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -159,6 +168,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="img\mini.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\discard.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\CustomForm\CustomForm.csproj">
+      <Project>{1257b2fb-2557-4a19-9084-59f9bc217282}</Project>
+      <Name>CustomForm</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="img\odrzuc.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

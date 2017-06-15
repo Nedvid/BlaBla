@@ -16,7 +16,6 @@ namespace BlaBla_Server
         private IPAddress ipAd = IPAddress.Parse(GetLocalIPAddress());
         private int port = 8001;
         
-        
         public Connection()
         {
             Console.WriteLine("Server is running...");

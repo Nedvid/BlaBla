@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlaBla_Client", "BlaBla_Cli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlaBla_Server", "..\BlaBla_Server\BlaBla_Server.csproj", "{DA3473D9-F357-4AEA-85B3-F98E4D1477CC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomForm", "..\CustomForm\CustomForm.csproj", "{1257B2FB-2557-4A19-9084-59F9BC217282}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{DA3473D9-F357-4AEA-85B3-F98E4D1477CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA3473D9-F357-4AEA-85B3-F98E4D1477CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA3473D9-F357-4AEA-85B3-F98E4D1477CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1257B2FB-2557-4A19-9084-59F9BC217282}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1257B2FB-2557-4A19-9084-59F9BC217282}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1257B2FB-2557-4A19-9084-59F9BC217282}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1257B2FB-2557-4A19-9084-59F9BC217282}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -23,21 +23,20 @@ namespace BlaBla_Client
 
         }
 
-        public static void runserver()
+        public static Boolean runserver()
         {
             try
             {
                 IPAddress ip = IPAddress.Parse(ip_server);
                 _client = new TcpClient();
                 _client.Connect(ip, port);
+                HandleCommunication();
+                return true;
             }
             catch
             {
-                MessageBox.Show("Server nie jest uruchomiony!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-
-            HandleCommunication();
+                return false;
+            } 
         }
 
         public static void HandleCommunication()

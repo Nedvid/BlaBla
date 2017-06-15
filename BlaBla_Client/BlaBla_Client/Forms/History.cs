@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace BlaBla_Client.Forms
 {
-    public partial class History : Form
+    public partial class History : CustomForm.MyForm
     {
         public History()
         {
