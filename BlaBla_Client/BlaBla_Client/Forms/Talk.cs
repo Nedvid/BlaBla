@@ -47,6 +47,7 @@ namespace BlaBla_Client.Forms
         private void pictureBox1_Click(object sender, EventArgs e)
         {
             OnCall = false;
+            Sender.add_history(Program.login, user, sw.Elapsed.ToString(@"hh\:mm\:ss"));
             this.Hide();
         }
     }

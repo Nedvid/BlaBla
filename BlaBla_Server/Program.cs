@@ -71,8 +71,26 @@ namespace BlaBla_Server
             Console.WriteLine(db_Functions.ShowFriends(cmd));
         }
 
+        public static void addcall (string caller, string receicer, string duration)
+        {
+            List<string> cmd = new List<string>();
+            cmd.Add(caller);
+            cmd.Add(receicer);
+            cmd.Add(duration);
+
+            Console.WriteLine(db_Functions.addVoiceHistory(cmd));
+        }
+
+        public static void showhistory(string login)
+        {
+            string calls = db_Functions.ShowHistory(login);
+            Console.WriteLine(calls);
+           
+        }
+
         static void Main(string[] args)
         {
+
             db_Functions.update_users();
             Connection c = new Connection();
             Console.WriteLine("\nPress any key to exit...");

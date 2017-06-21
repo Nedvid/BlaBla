@@ -76,6 +76,18 @@ namespace BlaBla_Server
                     {
                         return "0111" + Search(command[1]);
                     }
+                case "0110": //info o połączeniu
+                    {
+                        param.Add(command[1]); //kto
+                        param.Add(command[2]); //do kogo
+                        param.Add(command[3]); //czas
+                        return "0110" + addVoiceHistory(param);
+                    }
+                case "1000": //historia połączeń
+                    {
+                        param.Add(command[1]);
+                        return "1000" + ShowHistory(param[0]);
+                    }
             }
 
             return "error";
@@ -337,6 +349,56 @@ namespace BlaBla_Server
                 }
             }
             return false;
+        }
+
+        //dodanie info o połączeniu
+        public static Boolean addVoiceHistory(List<string> param)
+        {
+            string caller = param[0];
+            string receiver = param[1];
+            TimeSpan duration = TimeSpan.Parse(param[2]);
+            DateTime date = DateTime.Now;
+
+            using (var db = new BlaBla_dbContext())
+            {
+                VoiceHistory vh = new VoiceHistory();
+                vh.Id_Caller = db.Users.Where(x => x.Login == caller).Select(x => x.Id_User).FirstOrDefault();
+                vh.Id_Receiver = db.Users.Where(x => x.Login == receiver).Select(x => x.Id_User).FirstOrDefault();
+                vh.Duration = duration;
+                vh.CallDate = date;
+                db.VoiceHistories.Add(vh);
+                db.SaveChanges();
+            }
+            return true;
+        }
+
+        //historia połączeń
+        public static string ShowHistory(string login)
+        {
+            string calls_string = "";
+
+            using (var db = new BlaBla_dbContext())
+            {
+                var id_user = db.Users.Where(x => x.Login == login).Select(x => x.Id_User).FirstOrDefault();
+                List<VoiceHistory> calls;
+
+                calls = db.VoiceHistories.Where(x => x.Id_Caller == id_user || x.Id_Receiver==id_user).ToList();
+                if (calls != null)
+                {
+                    foreach (var item in calls)
+                    {
+                        string caller = db.Users.Where(x => x.Id_User == item.Id_Caller).Select(x => x.Login).FirstOrDefault();
+                        string receiver = db.Users.Where(x => x.Id_User == item.Id_Receiver).Select(x => x.Login).FirstOrDefault();
+
+                        calls_string += "|" + caller;
+                        calls_string += "|" + receiver;
+                        calls_string += "|" + item.Duration;
+                        calls_string += "|" + String.Format("{0:dd/MM/yy}", item.CallDate);
+                    }
+                }
+
+            }
+            return calls_string;
         }
 
         //update online

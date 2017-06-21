@@ -34,7 +34,7 @@ namespace BlaBla_Client.Forms
         static PhoneCallAudioSender mediaSender;
         static PhoneCallAudioReceiver mediaReceiver;
         static MediaConnector connector;
-        private readonly Thread Caller;
+        private Thread Caller;
 
         //Ogolne
         static string local_ip = GetLocalIPAddress();
@@ -116,22 +116,26 @@ namespace BlaBla_Client.Forms
             {
                 if (_client != null)
                 {
+                    send("BYE");
                     Status.Invoke(new MethodInvoker(delegate { Status.Text = "Rozłączono"; }));
                     CloseDevices();
                     Caller.Abort();
+                    Caller = new Thread(Ozeki);
                     Caller.Start();
                     busy = false;
-                    send("BYE");
+                   
                 }
                 else
                 {
+                    connect();
+                    send("BYE");
                     Status.Invoke(new MethodInvoker(delegate { Status.Text = "Rozłączono"; }));
                     CloseDevices();
                     Caller.Abort();
+                    Caller = new Thread(Ozeki);
                     Caller.Start();
-                    connect();
                     busy = false;
-                    send("BYE");
+                   
                 }
             }
         }
@@ -209,15 +213,8 @@ namespace BlaBla_Client.Forms
 
                     t.Invoke(new MethodInvoker(delegate
                     {
-                        t.user = destination_user;
-                        t.ShowDialog();
-                        checker();
+                        t.Hide();
                     }));
-
-                    CloseDevices();
-                    Caller.Abort();
-                    Caller.Start();
-                    Status.Invoke(new MethodInvoker(delegate { Status.Text = "Rozłączono"; }));
                 }
             }
         }
@@ -350,9 +347,9 @@ namespace BlaBla_Client.Forms
         }
         static void CloseDevices()
         {
+            phoneLine.Dispose();
             microphone.Dispose();
             speaker.Dispose();
-
             mediaReceiver.Detach();
             mediaSender.Detach();
             connector.Dispose();
@@ -390,21 +387,6 @@ namespace BlaBla_Client.Forms
         }
 
         //Akcje
-        private void pictureBox2_Click(object sender, EventArgs e)
-        {
-            if (Sender.logout(Program.login))
-            {
-                Connection.close();
-                this.Close();
-            }
-            else
-            {
-                Connection.close();
-                this.Close();
-            }
-
-
-        }
         private void button1_Click(object sender, EventArgs e)
         {
             destination_ip = textBox2.Text;
@@ -475,15 +457,10 @@ namespace BlaBla_Client.Forms
         [SecurityPermissionAttribute(SecurityAction.Demand, ControlThread = true)]
         private void pictureBox4_Click(object sender, EventArgs e)
         {
-            Program.login = "";
-            Program.Friends = new List<Friend>();
-            Sender.ChangeStatus();
+            Connection.close();
+            System.Diagnostics.Process.Start(Application.ExecutablePath); // to start new instance of application
+            this.Close(); //to turn off current app
 
-            if (Caller.IsAlive) Caller.Abort();
-            this.Close();
-
-            Login login_form = new Forms.Login();
-            login_form.Show();
         }
         private void pictureBox5_Click(object sender, EventArgs e)
         {

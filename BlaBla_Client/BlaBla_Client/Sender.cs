@@ -97,6 +97,20 @@ namespace BlaBla_Client
             }
         }
 
+        public static Boolean add_history(string login, string receiver, string during)
+        {
+            Connection.data = "0110|" + login + "|" + receiver + "|" + during;
+
+            if (Connection.send(Connection.data) == "0110|True")
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public static Boolean remove_friend(string login, string friend)
         {
             Connection.data = "1010|" + login + "|" + friend;
@@ -125,6 +139,16 @@ namespace BlaBla_Client
                 tmp.login = item.ToString();
                 Program.Friends.Add(tmp);
             }
+        }
+
+        public static List<string> History (string param)
+        {
+            Connection.data = "1000|" + param;
+            string answer = Connection.send(Connection.data);
+            List<string> wynik = seperate(answer);
+            wynik.RemoveAt(0);
+
+            return wynik;
         }
 
         public static void UpdateOnline ()
